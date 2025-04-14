@@ -1,0 +1,12 @@
+# === FaceGuard (UI + preprocessing) ===
+gradio==4.16.0
+opencv-python==4.9.0.80
+numpy==1.26.4
+Pillow==10.2.0
+tqdm==4.66.2
+mtcnn==0.1.1
+tensorflow==2.15.0
+keras==2.15.0
+moviepy==1.0.3
+imageio==2.33.1
+imageio-ffmpeg==0.4.9
