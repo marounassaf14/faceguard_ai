@@ -98,11 +98,17 @@ Then open your browser at:
 
 Make sure the following model files are downloaded and placed in the correct locations:
 
-1. **SimSwap Checkpoints**  
-   Download and extract [`checkpoints.zip`](https://drive.google.com/drive/folders/1jV6_0FIMPC53FZ2HzZNJZGMe55bbu17R) to:
-   ```bash
-   simswap_new/checkpoints/
-   ```
+1. **SimSwap Pretrained Models**  
+   Download from this [Google Drive folder](https://drive.google.com/drive/folders/1jV6_0FIMPC53FZ2HzZNJZGMe55bbu17R). It contains:
+
+   - `checkpoints.zip`: Unzip it and place its contents in the **root** directory:
+     ```bash
+     simswap_new/checkpoints/
+     ```
+   - `arcface_checkpoint.tar`: Copy this file into:
+     ```bash
+     simswap_new/arcface_model/
+     ```
 
 2. **Face Parsing Model (for postprocessing)**  
    Download from: [Link](https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view)  
@@ -129,7 +135,7 @@ Make sure the following model files are downloaded and placed in the correct loc
 
 ---
 
-## 🧠 Credits
+## 🧞 Credits
 
 - SimSwap by [neuralchen](https://github.com/neuralchen/SimSwap)
 - Face detection powered by MTCNN
