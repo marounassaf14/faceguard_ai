@@ -40,7 +40,6 @@ faceguard_ai/
 
 ## 📦 Setup
 
-
 ### Create and activate two environments:
 
 #### 🟩 FaceGuard Env:
@@ -94,6 +93,30 @@ Then open your browser at:
   ```
   simswap_new/utils/faceswap_identities/
   ```
+
+### 💾 Required Model Downloads
+
+Make sure the following model files are downloaded and placed in the correct locations:
+
+1. **SimSwap Checkpoints**  
+   Download and extract [`checkpoints.zip`](https://drive.google.com/drive/folders/1jV6_0FIMPC53FZ2HzZNJZGMe55bbu17R) to:
+   ```bash
+   simswap_new/checkpoints/
+   ```
+
+2. **Face Parsing Model (for postprocessing)**  
+   Download from: [Link](https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view)  
+   Place the `.pth` model in:
+   ```bash
+   simswap_new/parsing_model/checkpoint/
+   ```
+
+3. **InsightFace Models (for preprocessing)**  
+   Download from: [Link](https://drive.google.com/file/d/1goH5lO8BAhTpRhpBeXqWEcGkxiiLlgx9/view)  
+   Unzip contents into:
+   ```bash
+   simswap_new/insightface_func/models/
+   ```
 
 ---
 
