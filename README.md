@@ -91,7 +91,7 @@ Then open your browser at:
 - SimSwap runs in a separate subprocess using the `simswap` environment.
 - Identity images for face swaps should be placed in:
   ```
-  simswap_new/utils/faceswap_identities/
+  utils/faceswap_identities/
   ```
 
 ### 💾 Required Model Downloads
