@@ -1,0 +1,1 @@
+python test_video_swapsingle.py --crop_size 224 --use_mask --name people --Arc_path arcface_model/arcface_checkpoint.tar --pic_a_path ./demo_file/Iron_man.jpg --video_path 1.avi --output_path ./output/multi_test_swapsingle.mp4 --temp_path ./temp_results
