@@ -40,12 +40,8 @@ faceguard_ai/
 
 ## 📦 Setup
 
-### 1. Clone SimSwap into the project
-```bash
-git clone https://github.com/neuralchen/SimSwap.git simswap_new
-```
 
-### 2. Create and activate two environments:
+### Create and activate two environments:
 
 #### 🟩 FaceGuard Env:
 ```bash
@@ -121,4 +117,3 @@ Then open your browser at:
 ## 🔒 Disclaimer
 
 This project is for academic and research purposes only. Deepfake technology should always be used ethically and responsibly.
-```
