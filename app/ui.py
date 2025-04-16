@@ -60,12 +60,27 @@ def process_video(video, user_name):
     deepfake_dir = f"faces/{user_name}/fake"
     os.makedirs(deepfake_dir, exist_ok=True)
     existing_fakes = len([f for f in os.listdir(deepfake_dir) if f.endswith(".jpg")])
-
-    # ✅ Pass clean video directly
     run_simswap(user_name)
-
     final_fakes = len([f for f in os.listdir(deepfake_dir) if f.endswith(".jpg")])
     new_fake_count = final_fakes - existing_fakes
     logs.append(f"🧪 {new_fake_count} deepfake images generated in {deepfake_dir}")
 
     return "\n".join(logs)
+
+# 🗑️ Utility to delete user data
+def delete_user_data(user_name):
+    if not user_name.strip():
+        return "⚠️ Please enter a valid username."
+
+    paths = [
+        f"frames/{user_name}",
+        f"faces/{user_name}",
+        f"simswap_new/videos/{user_name}"
+    ]
+    deleted = []
+    for path in paths:
+        if os.path.exists(path):
+            shutil.rmtree(path)
+            deleted.append(path)
+
+    return f"✅ Deleted: {deleted}" if deleted else "⚠️ No data found for that user."
