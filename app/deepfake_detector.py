@@ -1,11 +1,11 @@
-import cv2
 import os
-import numpy as np
-import torch
-import torch.nn.functional as F
 from collections import Counter
 from mtcnn import MTCNN
 from PIL import Image
+import cv2
+import torch
+import torch.nn.functional as F
+import numpy as np
 from app.utils import preprocess_xception, preprocess_facenet
 
 # Load detector once
@@ -75,7 +75,7 @@ def detect_deepfake(
 
             if is_fake:
                 source, target, sim = match_embedding(embedding, False, real_embs_tensor, fake_embs_tensor, real_labels, fake_origins, fake_swaps, device)
-                label = f"Fake {confidence*100:.1f}%\nSource: {source} | Target: {target}"
+                label = f"Fake {confidence*100:.1f}%\nTarget: {source} | Source: {target}"
                 color = (0, 0, 255)
                 fake_flags.append(True)
                 source_names.append(source)
@@ -99,14 +99,63 @@ def detect_deepfake(
     if sum(fake_flags) > sum([not f for f in fake_flags]):
         most_src = Counter(source_names).most_common(1)[0][0]
         most_trg = Counter(swapped_names).most_common(1)[0][0]
-        summary_label = f"Deepfake   Source: {most_src} | Target: {most_trg}"
+        summary_label = f"Deepfake   Target: {most_src} | Source: {most_trg}"
     elif source_names:
         most_src = Counter(source_names).most_common(1)[0][0]
         summary_label = f"Real: {most_src}"
 
     for frame in frames:
-        cv2.putText(frame, summary_label, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 255, 255), 3)
+        # Calculate text size
+        text_size, _ = cv2.getTextSize(summary_label, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 3)
+        text_width = text_size[0]
+
+        # Centered x coordinate
+        x_center = int((frame.shape[1] - text_width) / 2)
+        y_pos = 40  # Top margin
+
+        cv2.putText(frame, summary_label, (x_center, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (50, 255, 255), 3)
         out.write(frame)
 
     out.release()
     return video_output_path
+
+
+def detect_image_deepfake(
+    image_path,
+    facenet_embedder,
+    real_embs_tensor, real_labels,
+    fake_embs_tensor, fake_origins, fake_swaps,
+    xception_model,
+    device
+):
+    try:
+        # Load and preprocess image
+        face_img = Image.open(image_path).convert("RGB")
+        xcep_input = preprocess_xception(np.array(face_img))
+        xcep_pred = xception_model.predict(xcep_input, verbose=0)[0][0]
+        is_fake = xcep_pred > 0.5
+        confidence = round(float(xcep_pred if is_fake else 1 - xcep_pred), 2)
+
+        face_tensor = preprocess_facenet(face_img).to(device)
+        embedding = facenet_embedder(face_tensor)
+
+        if is_fake:
+            source, target, sim = match_embedding(
+                embedding, False,
+                real_embs_tensor, fake_embs_tensor,
+                real_labels, fake_origins, fake_swaps,
+                device
+            )
+            return None, f"🟥 Fake ({confidence*100:.1f}%)\nTarget: {source} | Source: {target}"
+        else:
+            identity, sim = match_embedding(
+                embedding, True,
+                real_embs_tensor, fake_embs_tensor,
+                real_labels, fake_origins, fake_swaps,
+                device
+            )
+            return None, f"🟩 Real ({confidence*100:.1f}%)\nIdentity: {identity}"
+
+    except Exception as e:
+        return None, f"❌ Error: {str(e)}"
+
