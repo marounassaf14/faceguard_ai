@@ -52,10 +52,10 @@ facenet_embedder = FaceNetEmbedder(facenet_weights_path, device=device)
 # Here we assume they're in memory for simplicity.
 
 import pickle
-with open("models/real_embeddings.pkl", "rb") as f:
+with open("../models/real_embeddings.pkl", "rb") as f:
     real_embs, real_labels = pickle.load(f)
 
-with open("models/fake_embeddings.pkl", "rb") as f:
+with open("../models/fake_embeddings.pkl", "rb") as f:
     fake_embs, fake_origins, fake_swaps = pickle.load(f)
 
 # Convert to tensors for cosine similarity

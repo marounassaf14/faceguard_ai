@@ -100,10 +100,10 @@ for name in sorted(os.listdir(data_root)):
 # Save to pickle files
 # -------------------------------
 os.makedirs("models", exist_ok=True)
-with open("models/real_embeddings.pkl", "wb") as f:
+with open("../models/real_embeddings.pkl", "wb") as f:
     pickle.dump((real_embs, real_labels), f)
 
-with open("models/fake_embeddings.pkl", "wb") as f:
+with open("../models/fake_embeddings.pkl", "wb") as f:
     pickle.dump((fake_embs, fake_origins, fake_swaps), f)
 
 print("✅ Embedding databases saved.")
