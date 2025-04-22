@@ -1,12 +1,14 @@
-import os
-import cv2
-import numpy as np
+import torch
+from facenet_pytorch import InceptionResnetV1
+import torchvision.transforms as transforms
 import tensorflow as tf
-from sklearn.metrics.pairwise import cosine_similarity
-from keras.models import load_model
 
-# Load FaceNet model globally for reuse
-facenet_model = load_model("models/facenet_finetuned.h5")
+# -------------------------------
+# Load FaceNet model (PyTorch)
+# -------------------------------
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+facenet_model = InceptionResnetV1(pretrained='vggface2', classify=False).to(device)
+facenet_model.eval()
 
 # -------------------------------
 # XCEPTION PREPROCESSING
@@ -24,10 +26,9 @@ def preprocess_xception(image_np):
 # FACENET PREPROCESSING
 # -------------------------------
 def preprocess_facenet(img_pil):
-    from torchvision import transforms
     transform = transforms.Compose([
         transforms.Resize((160, 160)),
         transforms.ToTensor(),
         transforms.Normalize([0.5]*3, [0.5]*3)
     ])
-    return transform(img_pil).unsqueeze(0)  # Add batch dim
+    return transform(img_pil).unsqueeze(0).to(device)  # [1, 3, 160, 160]

@@ -67,8 +67,6 @@ def process_video(video, user_name):
 
     return "\n".join(logs)
 
-def detect_deepfake():
-    pass
 
 # 🗑️ Utility to delete user data
 def delete_user_data(user_name):

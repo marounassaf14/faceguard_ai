@@ -1,5 +1,17 @@
 import gradio as gr
-from app.ui import process_video, delete_user_data, detect_deepfake
+from app.ui import process_video, delete_user_data
+from app.load_models import (
+    facenet_embedder,
+    real_embs_tensor,
+    real_labels,
+    fake_embs_tensor,
+    fake_origins,
+    fake_swaps,
+    xception_model,
+    device
+)
+from app.deepfake_detector import detect_deepfake
+
 
 with gr.Blocks(title="FaceGuard AI") as demo:
     gr.Markdown("# 🛡️ FaceGuard AI")
@@ -39,11 +51,23 @@ with gr.Blocks(title="FaceGuard AI") as demo:
 
     # Run logic
     def handle_action(selected_mode, video, username):
+        # Handle tempfile from gr.Video
+        if isinstance(video, dict) and "name" in video:
+            video = video["name"]
+
         if selected_mode == "Create Dataset":
             logs = process_video(video, username)
             return logs, None
         else:
-            output_path = detect_deepfake(video)
+
+
+            output_path = detect_deepfake(
+                video,
+                facenet_embedder,
+                real_embs_tensor, real_labels,
+                fake_embs_tensor, fake_origins, fake_swaps,xception_model,device
+            )
+
             return None, output_path
 
     run_btn.click(
