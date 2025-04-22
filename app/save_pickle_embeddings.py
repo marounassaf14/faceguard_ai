@@ -4,6 +4,7 @@ import pickle
 import torch
 from PIL import Image
 from tqdm import tqdm
+import torch.nn as nn
 import numpy as np
 from facenet_pytorch import InceptionResnetV1, MTCNN
 import torchvision.transforms as transforms
@@ -11,28 +12,27 @@ import torchvision.transforms as transforms
 # -------------------------------
 # Paths and device
 # -------------------------------
-data_root = "faces"
+data_root = "../faces"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-weights_path = "models/best_real_classifier.pth"
+weights_path = "../models/best_real_classifier.pth"
 
 # -------------------------------
 # Load FaceNet embedder
 # -------------------------------
-class FaceNetEmbedder(torch.nn.Module):
-    def __init__(self, model_path, device='cpu'):
+class FaceNetIdentity(nn.Module):
+    def __init__(self, num_classes):
         super().__init__()
-        self.device = device
-        self.embedder = InceptionResnetV1(pretrained=None, classify=False).to(device)
-        checkpoint = torch.load(model_path, map_location=device)
-        filtered_ckpt = {k: v for k, v in checkpoint.items() if not k.startswith('classifier.')}
-        self.embedder.load_state_dict(filtered_ckpt)
-        self.embedder.eval()
+        self.embedder = InceptionResnetV1(pretrained='vggface2', classify=False)
+        self.classifier = nn.Linear(512, num_classes)
 
-    def forward(self, face_img):
-        with torch.no_grad():
-            return self.embedder(face_img.to(self.device)).cpu().numpy()
+    def forward(self, x):
+        emb = self.embedder(x)
+        return self.classifier(emb)
 
-facenet_embedder = FaceNetEmbedder(weights_path, device=device)
+model = FaceNetIdentity(num_classes=9)
+model.load_state_dict(torch.load(weights_path, map_location=device))
+model.eval()
+facenet_embedder = model.embedder  # use only the embedder part
 
 # -------------------------------
 # Face preprocessing (160x160)
